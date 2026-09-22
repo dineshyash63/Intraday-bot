@@ -1,0 +1,31 @@
+name: Intraday Trading Bot
+
+on:
+  schedule:
+    # இந்திய நேரப்படி காலை 9:45 மணிக்கு இயங்கும் (UTC 4:15)
+    - cron: '15 4 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install yfinance pandas requests
+
+      - name: Run Trading Bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python bot.py
+          
